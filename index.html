@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador Direto de Arte para Porcelana Memorial</title>
+    <title>Gerador de Prompt para Porcelana Memorial</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: #f0f2f5; margin: 0; padding: 20px; color: #333; }
@@ -11,11 +11,9 @@
         h1 { text-align: center; color: #1a252f; margin-bottom: 5px; font-size: 24px; }
         p.subtitle { text-align: center; color: #666; margin-bottom: 25px; font-size: 14px; }
         
-        .status-box { background: #e6fffa; border: 1px solid #b2f5ea; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; color: #234e52; font-weight: 500; font-size: 14px; }
-        
         .upload-section { border: 2px dashed #4a90e2; background: #f4f8ff; border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 20px; }
         .upload-section:hover { background: #e8f1fd; }
-        .preview-img { max-width: 150px; max-height: 180px; border-radius: 8px; margin-top: 10px; display: none; border: 2px solid #ccc; object-fit: cover; }
+        .preview-img { max-width: 160px; max-height: 200px; border-radius: 8px; margin-top: 10px; display: none; border: 2px solid #ccc; object-fit: cover; }
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .full-width { grid-column: span 2; }
@@ -24,38 +22,31 @@
         input, select, textarea { width: 100%; padding: 10px; border-radius: 6px; font-size: 14px; border: 1px solid #dcdfe6; outline: none; }
         input:focus, textarea:focus { border-color: #4a90e2; }
 
-        button { width: 100%; margin-top: 20px; padding: 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; background: #1a365d; color: white; transition: 0.2s; }
-        button:hover { background: #2a4365; }
-        button:disabled { background: #a0aec0; cursor: not-allowed; }
+        .btn-container { display: flex; gap: 10px; margin-top: 20px; }
+        button { flex: 1; padding: 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; transition: 0.2s; }
+        .btn-gerar { background: #1a365d; color: white; }
+        .btn-gerar:hover { background: #2a4365; }
+        .btn-copiar { background: #28a745; color: white; display: none; }
+        .btn-copiar:hover { background: #218838; }
 
-        .result-container { margin-top: 30px; text-align: center; display: none; }
-        .result-img { max-width: 100%; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-top: 15px; }
-        .spinner { display: none; margin: 20px auto; border: 4px solid #f3f3f3; border-top: 4px solid #1a365d; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .download-btn { display: inline-block; margin-top: 15px; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; }
-        .download-btn:hover { background-color: #218838; }
+        .output-box { margin-top: 25px; background: #2d3748; color: #edf2f7; padding: 18px; border-radius: 8px; font-family: monospace; font-size: 13px; line-height: 1.6; white-space: pre-wrap; display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Criador de Porcelana Memorial</h1>
-    <p class="subtitle">Geração Gratuita e Instantânea (Arte plana pronta para impressão)</p>
+    <h1>Gerador de Prompt para Porcelana</h1>
+    <p class="subtitle">Monte a estrutura perfeita para criar a arte plana de impressão</p>
 
-    <div class="status-box">
-        ✅ Servidor Ativo via GitHub Pages!
-    </div>
-
-    <!-- Upload Foto -->
-    <label>1. Foto do Homenageado (Pré-visualização):</label>
+    <!-- Upload de Foto (Apenas Pré-visualização Local) -->
+    <label>1. Foto do Homenageado (Conferência Visual):</label>
     <div class="upload-section" onclick="document.getElementById('fotoInput').click()">
-        <span id="uploadText">📷 Clique aqui para selecionar a foto da pessoa (JPG ou PNG)</span>
+        <span id="uploadText">📷 Clique para carregar a foto do homenageado</span>
         <input type="file" id="fotoInput" accept="image/*" style="display:none;" onchange="previewFoto(event)">
         <center><img id="imgPreview" class="preview-img" alt="Foto Selecionada"></center>
     </div>
 
-    <!-- Formulário -->
+    <!-- Formulário de Dados -->
     <div class="form-grid">
         <div class="full-width">
             <label>Nome Completo do Homenageado:</label>
@@ -80,8 +71,8 @@
         <div>
             <label>Formato:</label>
             <select id="formato">
-                <option value="oval" selected>Elíptico / Oval</option>
-                <option value="rectangular">Retangular</option>
+                <option value="elíptico (oval)" selected>Elíptico / Oval</option>
+                <option value="retangular">Retangular</option>
             </select>
         </div>
 
@@ -92,7 +83,7 @@
 
         <div>
             <label>Estilo do Fundo:</label>
-            <input type="text" id="fundo" value="Campos suaves e flores delicadas">
+            <input type="text" id="fundo" value="Campos suaves e flores delicadas em tons serenos">
         </div>
 
         <div>
@@ -101,16 +92,12 @@
         </div>
     </div>
 
-    <button id="btnGerar" onclick="gerarArteDireta()">GERAR ARTE FINAL PRONTA</button>
-
-    <div class="spinner" id="loadingSpinner"></div>
-
-    <div id="resultado" class="result-container">
-        <h3>Arte Gerada (Pronta para Impressão):</h3>
-        <img id="imagemResultado" class="result-img" alt="Arte da Porcelana">
-        <br>
-        <a id="downloadBtn" target="_blank" class="download-btn">Abrir / Salvar Imagem em Alta Resolução</a>
+    <div class="btn-container">
+        <button class="btn-gerar" onclick="gerarPromptTexto()">CRIAR PROMPT FORMATADO</button>
+        <button id="btnCopiar" class="btn-copiar" onclick="copiarPromptTexto()">📋 COPIAR PROMPT</button>
     </div>
+
+    <div id="promptOutput" class="output-box"></div>
 </div>
 
 <script>
@@ -120,14 +107,14 @@ function previewFoto(event) {
         const output = document.getElementById('imgPreview');
         output.src = reader.result;
         output.style.display = 'block';
-        document.getElementById('uploadText').innerText = "✅ Foto carregada! Clique para alterar.";
+        document.getElementById('uploadText').innerText = "✅ Foto carregada com sucesso!";
     };
     if (event.target.files[0]) {
         reader.readAsDataURL(event.target.files[0]);
     }
 }
 
-async function gerarArteDireta() {
+function gerarPromptTexto() {
     const nome = document.getElementById('nome').value;
     const dataNasc = document.getElementById('dataNasc').value;
     const dataFalesc = document.getElementById('dataFalesc').value;
@@ -136,42 +123,35 @@ async function gerarArteDireta() {
     const frase = document.getElementById('frase').value;
     const fundo = document.getElementById('fundo').value;
     const borda = document.getElementById('borda').value;
+    const temFoto = document.getElementById('fotoInput').files.length > 0;
 
-    const btn = document.getElementById('btnGerar');
-    const spinner = document.getElementById('loadingSpinner');
-    const resultadoDiv = document.getElementById('resultado');
+    let instrucaoFoto = temFoto 
+        ? "Insira o retrato principal em destaque no centro da composição, ocupando a maior parte do espaço e com acabamento de alta nitidez." 
+        : "Deixe um espaço de retrato central amplo e destacado como elemento principal da peça.";
 
-    btn.disabled = true;
-    spinner.style.display = 'block';
-    resultadoDiv.style.display = 'none';
+    const promptText = `ARTE GRAPHICA PLANA PRONTA PARA IMPRESSÃO EM PORCELANA (DESIGN 2D, SEM MOCKUP 3D DE TÚMBULO OU PERSPECTIVA)
 
-    // Prompt resumido para evitar falhas de tamanho de URL no servidor
-    const promptLimpo = `memorial plaque design ${formato} ${tamanho}, gold rope border, floral background, text ${nome}`;
-    const seed = Math.floor(Math.random() * 99999);
+- Formato da Peça: Placa de porcelana em formato ${formato}, tamanho ${tamanho}.
+- Elemento Central: ${instrucaoFoto}
+- Nome do Homenageado: "${nome}" em destaque superior/centralizado, utilizando tipografia estilo caligrafia dourada elegante.
+- Datas Comemorativas: "${dataNasc} - ${dataFalesc}" em fonte limpa e perfeitamente legível posicionado logo abaixo da imagem.
+- Frase Memorial: "${frase}" disposta na parte inferior em fonte serifada delicada.
+- Fundo Gráfico: Paisagem suave de ${fundo}, integrada sutilmente ao fundo da peça.
+- Borda: Moldura perfeitamente contínua com acabamento em ${borda}.
+- Especificação Técnica: Design direto em 2D, alta resolução (300 DPI), iluminação frontal limpa, pronto para envio ao forno/impressora cerâmica.`;
+
+    const output = document.getElementById('promptOutput');
+    output.innerText = promptText;
+    output.style.display = 'block';
     
-    // URL direta otimizada
-    const imageUrl = `https://pollinations.ai/p/${encodeURIComponent(promptLimpo)}?width=800&height=800&seed=${seed}&nologo=true`;
+    document.getElementById('btnCopiar').style.display = 'block';
+}
 
-    const imgElement = document.getElementById('imagemResultado');
-
-    // Tentativa de pré-carregamento para evitar disparo de onerror falso
-    try {
-        const response = await fetch(imageUrl);
-        if (!response.ok) throw new Error('Servidor ocupado');
-        
-        const blob = await response.blob();
-        const objectURL = URL.createObjectURL(blob);
-        
-        imgElement.src = objectURL;
-        document.getElementById('downloadBtn').href = objectURL;
-        
-        resultadoDiv.style.display = 'block';
-    } catch (error) {
-        alert("O servidor de geração gráfica está sobrecarregado no momento. Por favor, tente clicar em 'GERAR ARTE' novamente em alguns segundos.");
-    } finally {
-        btn.disabled = false;
-        spinner.style.display = 'none';
-    }
+function copiarPromptTexto() {
+    const texto = document.getElementById('promptOutput').innerText;
+    navigator.clipboard.writeText(texto).then(() => {
+        alert("Prompt copiado com sucesso! Agora basta colar na sua IA de preferência.");
+    });
 }
 </script>
 
