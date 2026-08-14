@@ -1,2 +1,175 @@
-# gera-arte-porcelana
-Gerador de arte para impressão na porcelana
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador Direto de Arte para Porcelana Memorial</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f0f2f5; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 750px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h1 { text-align: center; color: #1a252f; margin-bottom: 5px; font-size: 24px; }
+        p.subtitle { text-align: center; color: #666; margin-bottom: 25px; font-size: 14px; }
+        
+        .status-box { background: #e6fffa; border: 1px solid #b2f5ea; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; color: #234e52; font-weight: 500; font-size: 14px; }
+        
+        /* Estilo da Área de Upload da Foto */
+        .upload-section { border: 2px dashed #4a90e2; background: #f4f8ff; border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 20px; }
+        .upload-section:hover { background: #e8f1fd; }
+        .preview-img { max-width: 150px; max-height: 180px; border-radius: 8px; margin-top: 10px; display: none; border: 2px solid #ccc; object-fit: cover; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: span 2; }
+        
+        label { font-weight: 600; font-size: 13px; color: #444; display: block; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; padding: 10px; border-radius: 6px; font-size: 14px; border: 1px solid #dcdfe6; outline: none; }
+        input:focus, textarea:focus { border-color: #4a90e2; }
+
+        button { width: 100%; margin-top: 20px; padding: 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; background: #1a365d; color: white; transition: 0.2s; }
+        button:hover { background: #2a4365; }
+        button:disabled { background: #a0aec0; cursor: not-allowed; }
+
+        .result-container { margin-top: 30px; text-align: center; display: none; }
+        .result-img { max-width: 100%; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-top: 15px; }
+        .spinner { display: none; margin: 20px auto; border: 4px solid #f3f3f3; border-top: 4px solid #1a365d; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .download-btn { display: inline-block; margin-top: 15px; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; }
+        .download-btn:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Criador de Porcelana Memorial</h1>
+    <p class="subtitle">Geração Gratuita e Instantânea (Arte plana pronta para impressão)</p>
+
+    <div class="status-box">
+        ✅ Sistema Ativo! Sem necessidade de API Key ou pagamentos.
+    </div>
+
+    <!-- Campo para carregar foto -->
+    <label>1. Foto do Homenageado (Pré-visualização):</label>
+    <div class="upload-section" onclick="document.getElementById('fotoInput').click()">
+        <span id="uploadText">📷 Clique aqui para selecionar a foto da pessoa (JPG ou PNG)</span>
+        <input type="file" id="fotoInput" accept="image/*" style="display:none;" onchange="previewFoto(event)">
+        <center><img id="imgPreview" class="preview-img" alt="Foto Selecionada"></center>
+    </div>
+
+    <!-- Formulário -->
+    <div class="form-grid">
+        <div class="full-width">
+            <label>Nome Completo do Homenageado:</label>
+            <input type="text" id="nome" value="Silmar José dos Anjos">
+        </div>
+
+        <div>
+            <label>Data de Nascimento:</label>
+            <input type="text" id="dataNasc" value="02/12/1984">
+        </div>
+
+        <div>
+            <label>Data de Falecimento:</label>
+            <input type="text" id="dataFalesc" value="15/09/2024">
+        </div>
+
+        <div>
+            <label>Tamanho da Placa:</label>
+            <input type="text" id="tamanho" value="9x12 cm">
+        </div>
+
+        <div>
+            <label>Formato:</label>
+            <select id="formato">
+                <option value="elíptico" selected>Elíptico / Oval</option>
+                <option value="retangular">Retangular</option>
+            </select>
+        </div>
+
+        <div class="full-width">
+            <label>Frase Memorial:</label>
+            <textarea id="frase" rows="2">Aquele que amamos não se ausenta, se traduz em eternidade e Saudade</textarea>
+        </div>
+
+        <div>
+            <label>Estilo do Fundo:</label>
+            <input type="text" id="fundo" value="Campos suaves e flores delicadas em tons serenos">
+        </div>
+
+        <div>
+            <label>Estilo da Borda:</label>
+            <input type="text" id="borda" value="Dourado estilo cordão trançado">
+        </div>
+    </div>
+
+    <button id="btnGerar" onclick="gerarArteDireta()">GERAR ARTE FINAL PRONTA</button>
+
+    <div class="spinner" id="loadingSpinner"></div>
+
+    <div id="resultado" class="result-container">
+        <h3>Arte Gerada (Pronta para Impressão):</h3>
+        <img id="imagemResultado" class="result-img" alt="Arte da Porcelana">
+        <br>
+        <a id="downloadBtn" target="_blank" class="download-btn">Abrir/Baixar Imagem em Alta Resolução</a>
+    </div>
+</div>
+
+<script>
+function previewFoto(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+        const output = document.getElementById('imgPreview');
+        output.src = reader.result;
+        output.style.display = 'block';
+        document.getElementById('uploadText').innerText = "✅ Foto carregada com sucesso! Clique para alterar.";
+    };
+    if (event.target.files[0]) {
+        reader.readAsDataURL(event.target.files[0]);
+    }
+}
+
+function gerarArteDireta() {
+    const nome = document.getElementById('nome').value;
+    const dataNasc = document.getElementById('dataNasc').value;
+    const dataFalesc = document.getElementById('dataFalesc').value;
+    const tamanho = document.getElementById('tamanho').value;
+    const formato = document.getElementById('formato').value;
+    const frase = document.getElementById('frase').value;
+    const fundo = document.getElementById('fundo').value;
+    const borda = document.getElementById('borda').value;
+
+    const btn = document.getElementById('btnGerar');
+    const spinner = document.getElementById('loadingSpinner');
+    const resultadoDiv = document.getElementById('resultado');
+
+    btn.disabled = true;
+    spinner.style.display = 'block';
+    resultadoDiv.style.display = 'none';
+
+    // Monta o prompt direto e otimizado
+    const promptTexto = encodeURIComponent(`flat 2D graphic design artwork for memorial porcelain plaque, ${formato} shape, size ${tamanho}, golden rope border style ${borda}, soft serene background with ${fundo}, gold cursive calligraphy text '${nome}', dates '${dataNasc} - ${dataFalesc}', memorial text '${frase}', portrait photo space in the center, ready for print, high resolution, top quality`);
+
+    // Geração dinâmica via Pollinations AI
+    const seed = Math.floor(Math.random() * 1000000);
+    const imageUrl = `https://pollinations.ai/p/${promptTexto}?width=1024&height=1024&seed=${seed}&nologo=true&model=flux`;
+
+    const imgElement = document.getElementById('imagemResultado');
+    imgElement.src = imageUrl;
+
+    imgElement.onload = function() {
+        document.getElementById('downloadBtn').href = imageUrl;
+        resultadoDiv.style.display = 'block';
+        btn.disabled = false;
+        spinner.style.display = 'none';
+    };
+
+    imgElement.onerror = function() {
+        alert("Erro ao carregar a imagem. Tente clicar no botão novamente.");
+        btn.disabled = false;
+        spinner.style.display = 'none';
+    };
+}
+</script>
+
+</body>
+</html>
