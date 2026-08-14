@@ -127,7 +127,7 @@ function previewFoto(event) {
     }
 }
 
-function gerarArteDireta() {
+async function gerarArteDireta() {
     const nome = document.getElementById('nome').value;
     const dataNasc = document.getElementById('dataNasc').value;
     const dataFalesc = document.getElementById('dataFalesc').value;
@@ -145,30 +145,33 @@ function gerarArteDireta() {
     spinner.style.display = 'block';
     resultadoDiv.style.display = 'none';
 
-    // Montagem e codificação segura da URL para evitar erros de caractere
-    const promptTexto = `flat 2d graphic design artwork for memorial porcelain plaque, ${formato} shape, size ${tamanho}, golden rope border ${borda}, soft background with ${fundo}, gold cursive text ${nome}, dates ${dataNasc} - ${dataFalesc}, text ${frase}, central portrait photo, print ready, high resolution`;
+    // Prompt resumido para evitar falhas de tamanho de URL no servidor
+    const promptLimpo = `memorial plaque design ${formato} ${tamanho}, gold rope border, floral background, text ${nome}`;
+    const seed = Math.floor(Math.random() * 99999);
     
-    const promptEncoded = encodeURIComponent(promptTexto);
-    const seed = Math.floor(Math.random() * 900000) + 100000;
-    
-    // URL estável da API sem parâmetros conflitantes
-    const imageUrl = `https://image.pollinations.ai/prompt/${promptEncoded}?width=1024&height=1024&seed=${seed}&nologo=true`;
+    // URL direta otimizada
+    const imageUrl = `https://pollinations.ai/p/${encodeURIComponent(promptLimpo)}?width=800&height=800&seed=${seed}&nologo=true`;
 
     const imgElement = document.getElementById('imagemResultado');
-    imgElement.src = imageUrl;
 
-    imgElement.onload = function() {
-        document.getElementById('downloadBtn').href = imageUrl;
+    // Tentativa de pré-carregamento para evitar disparo de onerror falso
+    try {
+        const response = await fetch(imageUrl);
+        if (!response.ok) throw new Error('Servidor ocupado');
+        
+        const blob = await response.blob();
+        const objectURL = URL.createObjectURL(blob);
+        
+        imgElement.src = objectURL;
+        document.getElementById('downloadBtn').href = objectURL;
+        
         resultadoDiv.style.display = 'block';
+    } catch (error) {
+        alert("O servidor de geração gráfica está sobrecarregado no momento. Por favor, tente clicar em 'GERAR ARTE' novamente em alguns segundos.");
+    } finally {
         btn.disabled = false;
         spinner.style.display = 'none';
-    };
-
-    imgElement.onerror = function() {
-        alert("A requisição demorou um pouco mais. Clique em 'GERAR ARTE FINAL PRONTA' novamente.");
-        btn.disabled = false;
-        spinner.style.display = 'none';
-    };
+    }
 }
 </script>
 
