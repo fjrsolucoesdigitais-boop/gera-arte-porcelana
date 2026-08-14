@@ -13,7 +13,6 @@
         
         .status-box { background: #e6fffa; border: 1px solid #b2f5ea; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; color: #234e52; font-weight: 500; font-size: 14px; }
         
-        /* Estilo da Área de Upload da Foto */
         .upload-section { border: 2px dashed #4a90e2; background: #f4f8ff; border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 20px; }
         .upload-section:hover { background: #e8f1fd; }
         .preview-img { max-width: 150px; max-height: 180px; border-radius: 8px; margin-top: 10px; display: none; border: 2px solid #ccc; object-fit: cover; }
@@ -45,10 +44,10 @@
     <p class="subtitle">Geração Gratuita e Instantânea (Arte plana pronta para impressão)</p>
 
     <div class="status-box">
-        ✅ Sistema Ativo! Sem necessidade de API Key ou pagamentos.
+        ✅ Servidor Ativo via GitHub Pages!
     </div>
 
-    <!-- Campo para carregar foto -->
+    <!-- Upload Foto -->
     <label>1. Foto do Homenageado (Pré-visualização):</label>
     <div class="upload-section" onclick="document.getElementById('fotoInput').click()">
         <span id="uploadText">📷 Clique aqui para selecionar a foto da pessoa (JPG ou PNG)</span>
@@ -81,8 +80,8 @@
         <div>
             <label>Formato:</label>
             <select id="formato">
-                <option value="elíptico" selected>Elíptico / Oval</option>
-                <option value="retangular">Retangular</option>
+                <option value="oval" selected>Elíptico / Oval</option>
+                <option value="rectangular">Retangular</option>
             </select>
         </div>
 
@@ -93,7 +92,7 @@
 
         <div>
             <label>Estilo do Fundo:</label>
-            <input type="text" id="fundo" value="Campos suaves e flores delicadas em tons serenos">
+            <input type="text" id="fundo" value="Campos suaves e flores delicadas">
         </div>
 
         <div>
@@ -110,7 +109,7 @@
         <h3>Arte Gerada (Pronta para Impressão):</h3>
         <img id="imagemResultado" class="result-img" alt="Arte da Porcelana">
         <br>
-        <a id="downloadBtn" target="_blank" class="download-btn">Abrir/Baixar Imagem em Alta Resolução</a>
+        <a id="downloadBtn" target="_blank" class="download-btn">Abrir / Salvar Imagem em Alta Resolução</a>
     </div>
 </div>
 
@@ -121,7 +120,7 @@ function previewFoto(event) {
         const output = document.getElementById('imgPreview');
         output.src = reader.result;
         output.style.display = 'block';
-        document.getElementById('uploadText').innerText = "✅ Foto carregada com sucesso! Clique para alterar.";
+        document.getElementById('uploadText').innerText = "✅ Foto carregada! Clique para alterar.";
     };
     if (event.target.files[0]) {
         reader.readAsDataURL(event.target.files[0]);
@@ -146,12 +145,14 @@ function gerarArteDireta() {
     spinner.style.display = 'block';
     resultadoDiv.style.display = 'none';
 
-    // Monta o prompt direto e otimizado
-    const promptTexto = encodeURIComponent(`flat 2D graphic design artwork for memorial porcelain plaque, ${formato} shape, size ${tamanho}, golden rope border style ${borda}, soft serene background with ${fundo}, gold cursive calligraphy text '${nome}', dates '${dataNasc} - ${dataFalesc}', memorial text '${frase}', portrait photo space in the center, ready for print, high resolution, top quality`);
-
-    // Geração dinâmica via Pollinations AI
-    const seed = Math.floor(Math.random() * 1000000);
-    const imageUrl = `https://pollinations.ai/p/${promptTexto}?width=1024&height=1024&seed=${seed}&nologo=true&model=flux`;
+    // Montagem e codificação segura da URL para evitar erros de caractere
+    const promptTexto = `flat 2d graphic design artwork for memorial porcelain plaque, ${formato} shape, size ${tamanho}, golden rope border ${borda}, soft background with ${fundo}, gold cursive text ${nome}, dates ${dataNasc} - ${dataFalesc}, text ${frase}, central portrait photo, print ready, high resolution`;
+    
+    const promptEncoded = encodeURIComponent(promptTexto);
+    const seed = Math.floor(Math.random() * 900000) + 100000;
+    
+    // URL estável da API sem parâmetros conflitantes
+    const imageUrl = `https://image.pollinations.ai/prompt/${promptEncoded}?width=1024&height=1024&seed=${seed}&nologo=true`;
 
     const imgElement = document.getElementById('imagemResultado');
     imgElement.src = imageUrl;
@@ -164,7 +165,7 @@ function gerarArteDireta() {
     };
 
     imgElement.onerror = function() {
-        alert("Erro ao carregar a imagem. Tente clicar no botão novamente.");
+        alert("A requisição demorou um pouco mais. Clique em 'GERAR ARTE FINAL PRONTA' novamente.");
         btn.disabled = false;
         spinner.style.display = 'none';
     };
