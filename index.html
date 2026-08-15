@@ -3,60 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Prompt para Porcelana</title>
+    <title>Gerador de Prompt para Porcelana Memorial</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h2 { margin-top: 0; color: #444; text-align: center; }
-        label { font-weight: bold; display: block; margin-top: 12px; }
-        input, textarea, select { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        button { margin-top: 15px; width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
-        button:hover { background-color: #218838; }
-        .btn-copy { background-color: #007bff; margin-top: 10px; }
-        .btn-copy:hover { background-color: #0056b3; }
-        .output-box { margin-top: 20px; padding: 12px; background: #e9ecef; border-radius: 4px; white-space: pre-wrap; font-family: monospace; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f0f2f5; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 750px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h1 { text-align: center; color: #1a252f; margin-bottom: 5px; font-size: 24px; }
+        p.subtitle { text-align: center; color: #666; margin-bottom: 25px; font-size: 14px; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: span 2; }
+        
+        label { font-weight: 600; font-size: 13px; color: #444; display: block; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; padding: 10px; border-radius: 6px; font-size: 14px; border: 1px solid #dcdfe6; outline: none; }
+        input:focus, textarea:focus, select:focus { border-color: #4a90e2; }
+
+        /* Estilo da caixa de instruções */
+        .instructions-box { margin-top: 25px; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #1a365d; border-radius: 6px; padding: 18px; }
+        .instructions-box h3 { margin: 0 0 10px 0; color: #1a365d; font-size: 15px; }
+        .instructions-box ul { margin: 0; padding-left: 20px; color: #4a5568; font-size: 13px; line-height: 1.6; }
+        .instructions-box li { margin-bottom: 6px; }
+        .instructions-box a { color: #2b6cb0; text-decoration: underline; font-weight: 600; }
+
+        .btn-container { display: flex; gap: 10px; margin-top: 20px; }
+        button { flex: 1; padding: 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; transition: 0.2s; }
+        .btn-gerar { background: #1a365d; color: white; }
+        .btn-gerar:hover { background: #2a4365; }
+        .btn-copiar { background: #28a745; color: white; display: none; }
+        .btn-copiar:hover { background: #218838; }
+
+        .output-box { margin-top: 25px; background: #2d3748; color: #edf2f7; padding: 18px; border-radius: 8px; font-family: monospace; font-size: 13px; line-height: 1.6; white-space: pre-wrap; display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Gerador de Prompt para Porcelana</h2>
-    
-    <label>Nome do Homenageado:</label>
-    <input type="text" id="nome" value="Silmar José dos Anjos">
+    <h1>Gerador de Prompt para Porcelana</h1>
+    <p class="subtitle">Monte a estrutura perfeita para criar a arte plana de impressão</p>
 
-    <label>Data de Nascimento:</label>
-    <input type="text" id="dataNasc" value="02/12/1984">
+    <!-- Formulário de Dados -->
+    <div class="form-grid">
+        <div class="full-width">
+            <label>Nome Completo do Homenageado:</label>
+            <input type="text" id="nome" value="Silmar José dos Anjos">
+        </div>
 
-    <label>Data de Falecimento:</label>
-    <input type="text" id="dataFalesc" value="15/09/2024">
+        <div>
+            <label>Data de Nascimento:</label>
+            <input type="text" id="dataNasc" value="02/12/1984">
+        </div>
 
-    <label>Tamanho (ex: 9x12 cm):</label>
-    <input type="text" id="tamanho" value="9x12 cm">
+        <div>
+            <label>Data de Falecimento:</label>
+            <input type="text" id="dataFalesc" value="15/09/2024">
+        </div>
 
-    <label>Formato:</label>
-    <input type="text" id="formato" value="elíptico">
+        <div>
+            <label>Tamanho e Orientação da Placa:</label>
+            <select id="tamanho">
+                <option value="6x8 cm (vertical)">6x8 vertical</option>
+                <option value="6x8 cm (horizontal)">6x8 horizontal</option>
+                <option value="7x9 cm (vertical)">7x9 vertical</option>
+                <option value="7x9 cm (horizontal)">7x9 horizontal</option>
+                <option value="8x10 cm (vertical)">8x10 vertical</option>
+                <option value="8x10 cm (horizontal)">8x10 horizontal</option>
+                <option value="9x12 cm (vertical)" selected>9x12 vertical</option>
+                <option value="9x12 cm (horizontal)">9x12 horizontal</option>
+                <option value="11x14 cm (vertical)">11x14 vertical</option>
+                <option value="11x14 cm (horizontal)">11x14 horizontal</option>
+                <option value="13x18 cm (vertical)">13x18 vertical</option>
+                <option value="13x18 cm (horizontal)">13x18 horizontal</option>
+                <option value="18x24 cm (vertical)">18x24 vertical</option>
+                <option value="18x24 cm (horizontal)">18x24 horizontal</option>
+                <option value="10x25 cm (vertical)">10x25 vertical</option>
+                <option value="10x25 cm (horizontal)">10x25 horizontal</option>
+                <option value="20x29 cm (vertical)">20x29 vertical</option>
+                <option value="20x29 cm (horizontal)">20x29 horizontal</option>
+                <option value="30x40 cm (vertical)">30x40 vertical</option>
+                <option value="30x40 cm (horizontal)">30x40 horizontal</option>
+            </select>
+        </div>
 
-    <label>Frase Memorial:</label>
-    <textarea id="frase" rows="3">Aquele que amamos não se ausenta, se traduz em eternidade e Saudade</textarea>
+        <div>
+            <label>Formato:</label>
+            <select id="formato">
+                <option value="elíptico (oval)" selected>Elíptico / Oval</option>
+                <option value="retangular">Retangular</option>
+            </select>
+        </div>
 
-    <label>Estilo do Fundo:</label>
-    <input type="text" id="fundo" value="campos verdes e flores delicadas">
+        <div class="full-width">
+            <label>Frase Memorial:</label>
+            <textarea id="frase" rows="2">Aquele que amamos não se ausenta, se traduz em eternidade e Saudade</textarea>
+        </div>
 
-    <label>Estilo da Borda:</label>
-    <input type="text" id="borda" value="dourada em estilo cordão trançado">
+        <div>
+            <label>Estilo do Fundo:</label>
+            <input type="text" id="fundo" value="Campos suaves e flores delicadas em tons serenos">
+        </div>
 
-    <button onclick="gerarPrompt()">Gerar Prompt</button>
+        <div>
+            <label>Estilo da Borda:</label>
+            <input type="text" id="borda" value="Dourado estilo cordão trançado">
+        </div>
 
-    <div id="resultadoContainer" style="display:none;">
-        <label>Prompt Gerado:</label>
-        <div id="resultado" class="output-box"></div>
-        <button class="btn-copy" onclick="copiarPrompt()">Copiar Prompt</button>
+        <div class="full-width">
+            <label>Detalhe Adicional na Edição:</label>
+            <input type="text" id="detalhe" value="descreva detalhe a mais na edição">
+        </div>
     </div>
+
+    <!-- Passo a Passo -->
+    <div class="instructions-box">
+        <h3>Como prosseguir com a criação da arte:</h3>
+        <ul>
+            <li>Ao preencher os campos acima, clique no botão abaixo <strong>CRIAR PROMPT FORMATADO</strong> e em seguida clique no botão verde <strong>COPIAR PROMPT</strong>.</li>
+            <li>Acesse o site <a href="https://chatgpt.com/" target="_blank">https://chatgpt.com/</a> e faça login com sua conta.</li>
+            <li>Envie a foto da pessoa e cole no campo o prompt copiado e clique em executar.</li>
+            <li>Aguarde o resultado.</li>
+        </ul>
+    </div>
+
+    <!-- Botões -->
+    <div class="btn-container">
+        <button class="btn-gerar" onclick="gerarPromptTexto()">CRIAR PROMPT FORMATADO</button>
+        <button id="btnCopiar" class="btn-copiar" onclick="copiarPromptTexto()">📋 COPIAR PROMPT</button>
+    </div>
+
+    <div id="promptOutput" class="output-box"></div>
 </div>
 
 <script>
-function gerarPrompt() {
+function gerarPromptTexto() {
     const nome = document.getElementById('nome').value;
     const dataNasc = document.getElementById('dataNasc').value;
     const dataFalesc = document.getElementById('dataFalesc').value;
@@ -65,23 +143,53 @@ function gerarPrompt() {
     const frase = document.getElementById('frase').value;
     const fundo = document.getElementById('fundo').value;
     const borda = document.getElementById('borda').value;
+    const detalhe = document.getElementById('detalhe').value;
 
-    const promptText = `Arte memorial realista para placa de porcelana funerária em formato ${formato}, tamanho ${tamanho}.\n\n` +
-        `- **Elemento central**: Foto/Texto em homenagem a "${nome}".\n` +
-        `- **Datas**: Nascido em ${dataNasc} e falecido em ${dataFalesc}.\n` +
-        `- **Frase comemorativa**: "${frase}".\n` +
-        `- **Fundo**: Paisagem suave de ${fundo}, com iluminação angelical e cores serenas.\n` +
-        `- **Borda**: Acabamento com moldura ${borda}.\n` +
-        `- **Estilo visual**: Porcelana vitrificada de alto brilho, acabamento fino, alta resolução 8K, estilo respeitoso e elegante.`;
+    const tamanhosLaterais = [
+        "10x25 cm (horizontal)", 
+        "18x24 cm (horizontal)", 
+        "13x18 cm (horizontal)", 
+        "11x14 cm (horizontal)"
+    ];
 
-    document.getElementById('resultado').innerText = promptText;
-    document.getElementById('resultadoContainer').style.display = 'block';
+    const ehLayoutLateral = (formato === "retangular") && tamanhosLaterais.includes(tamanho);
+
+    let layoutPrompt = "";
+
+    if (ehLayoutLateral) {
+        layoutPrompt = `- Layout e Distribuição: Composição horizontal dividida. A foto do homenageado deve ficar posicionada no LADO ESQUERDO da placa. Toda a parte textual (nome, datas e frase) deve ficar organizada no LADO DIREITO da peça.
+- Elemento Central (Foto): Posicione o retrato da pessoa no lado esquerdo da composição com amplo destaque.
+- Nome do Homenageado: "${nome}" em destaque no topo do lado direito, utilizando tipografia estilo caligrafia dourada elegante.
+- Datas Comemorativas: "${dataNasc} - ${dataFalesc}" em fonte limpa e legível, posicionadas no lado direito logo abaixo do nome.
+- Frase Memorial: "${frase}" disposta na parte inferior do lado direito em fonte serifada delicada.`;
+    } else {
+        layoutPrompt = `- Layout e Distribuição: Composição centralizada equilibrada.
+- Elemento Central (Foto): Deixe um espaço de retrato central amplo e destacado como elemento principal da peça para inserção da foto.
+- Nome do Homenageado: "${nome}" em destaque superior/centralizado, utilizando tipografia estilo caligrafia dourada elegante.
+- Datas Comemorativas: "${dataNasc} - ${dataFalesc}" em fonte limpa e perfeitamente legível posicionado logo abaixo da imagem.
+- Frase Memorial: "${frase}" disposta na parte inferior em fonte serifada delicada.`;
+    }
+
+    const promptText = `ARTE GRÁFICA PLANA PRONTA PARA IMPRESSÃO EM PORCELANA (DESIGN 2D, SEM MOCKUP 3D DE TÚMULO OU PERSPECTIVA)
+
+- Formato e Dimensão: Placa de porcelana em formato ${formato}, tamanho ${tamanho}.
+${layoutPrompt}
+- Fundo Gráfico: Paisagem suave de ${fundo}, integrada sutilmente ao fundo da peça.
+- Borda: Moldura perfeitamente contínua com acabamento em ${borda}.
+- Detalhes Especiais da Edição: ${detalhe}.
+- Especificação Técnica: Design direto em 2D, alta resolução (300 DPI), iluminação frontal limpa, pronto para envio ao forno/impressora cerâmica.`;
+
+    const output = document.getElementById('promptOutput');
+    output.innerText = promptText;
+    output.style.display = 'block';
+    
+    document.getElementById('btnCopiar').style.display = 'block';
 }
 
-function copiarPrompt() {
-    const texto = document.getElementById('resultado').innerText;
+function copiarPromptTexto() {
+    const texto = document.getElementById('promptOutput').innerText;
     navigator.clipboard.writeText(texto).then(() => {
-        alert('Prompt copiado para a área de transferência!');
+        alert("Prompt copiado com sucesso! Agora basta colar na sua IA de preferência.");
     });
 }
 </script>
