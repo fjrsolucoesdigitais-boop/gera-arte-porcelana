@@ -99,12 +99,12 @@
 
         <div>
             <label>Estilo do Fundo:</label>
-            <input type="text" id="fundo" value="Campos suaves e flores delicadas em tons serenos">
+            <input type="text" id="fundo" value="FUNDO CÉU COM NUVENS">
         </div>
 
         <div>
             <label>Estilo da Borda:</label>
-            <input type="text" id="borda" value="Dourado estilo cordão trançado">
+            <input type="text" id="borda" value="DOURADO LISO ESTILO METAL">
         </div>
 
         <div class="full-width">
@@ -135,49 +135,72 @@
 
 <script>
 function gerarPromptTexto() {
-    const nome = document.getElementById('nome').value;
-    const dataNasc = document.getElementById('dataNasc').value;
-    const dataFalesc = document.getElementById('dataFalesc').value;
+    const nome = document.getElementById('nome').value.trim();
+    const dataNasc = document.getElementById('dataNasc').value.trim();
+    const dataFalesc = document.getElementById('dataFalesc').value.trim();
+    const frase = document.getElementById('frase').value.trim();
+    
     const tamanho = document.getElementById('tamanho').value;
     const formato = document.getElementById('formato').value;
-    const frase = document.getElementById('frase').value;
     const fundo = document.getElementById('fundo').value;
     const borda = document.getElementById('borda').value;
     const detalhe = document.getElementById('detalhe').value;
 
-    const tamanhosLaterais = [
-        "10x25 cm (horizontal)", 
-        "18x24 cm (horizontal)", 
-        "13x18 cm (horizontal)", 
-        "11x14 cm (horizontal)"
-    ];
+    // Instrução técnica para otimização da imagem
+    const instrucaoQualidadeFoto = "- Restauração e Qualidade da Foto: Melhore automaticamente a nitidez, definição dos traços faciais e foco do retrato enviado. Elimine ruídos, manchas, sombras indesejadas, desfoque ou imperfeições da imagem original, mantendo total fidelidade aos feições reais da pessoa.";
 
-    const ehLayoutLateral = (formato === "retangular") && tamanhosLaterais.includes(tamanho);
+    const apenasFoto = (!nome && !dataNasc && !dataFalesc && !frase);
 
-    let layoutPrompt = "";
+    let promptText = "";
 
-    if (ehLayoutLateral) {
-        layoutPrompt = `- Layout e Distribuição: Composição horizontal dividida. A foto do homenageado deve ficar posicionada no LADO ESQUERDO da placa. Toda a parte textual (nome, datas e frase) deve ficar organizada no LADO DIREITO da peça.
+    if (apenasFoto) {
+        promptText = `ARTE GRÁFICA PLANA PRONTA PARA IMPRESSÃO EM PORCELANA (DESIGN 2D, SEM MOCKUP 3D DE TÚMULO OU PERSPECTIVA)
+
+- Formato e Dimensão: Placa de porcelana em formato ${formato}, tamanho ${tamanho}.
+- Elemento Central: Trate e posicione o retrato da pessoa enviado em destaque central total, ocupando a área principal da composição de forma limpa e harmônica.
+${instrucaoQualidadeFoto}
+- Textos e Tipografia: NÃO INCLUA NENHUM TEXTO, NOME, DATA OU FRASE. A peça deve conter EXCLUSIVAMENTE a foto do homenageado.
+- Fundo Gráfico: Paisagem suave de ${fundo}, integrada sutilmente ao fundo da peça.
+- Borda: Moldura perfeitamente contínua com acabamento em ${borda}.
+- Detalhes Especiais da Edição: ${detalhe}.
+- Especificação Técnica: Design direto em 2D, ultra nitidez, alta resolução (300 DPI), iluminação frontal limpa, pronto para envio ao forno/impressora cerâmica.`;
+    } else {
+        const tamanhosLaterais = [
+            "10x25 cm (horizontal)", 
+            "18x24 cm (horizontal)", 
+            "13x18 cm (horizontal)", 
+            "11x14 cm (horizontal)"
+        ];
+
+        const ehLayoutLateral = (formato === "retangular") && tamanhosLaterais.includes(tamanho);
+
+        let layoutPrompt = "";
+
+        if (ehLayoutLateral) {
+            layoutPrompt = `- Layout e Distribuição: Composição horizontal dividida. A foto do homenageado deve ficar posicionada no LADO ESQUERDO da placa. Toda a parte textual (nome, datas e frase) deve ficar organizada no LADO DIREITO da peça.
 - Elemento Central (Foto): Posicione o retrato da pessoa no lado esquerdo da composição com amplo destaque.
+${instrucaoQualidadeFoto}
 - Nome do Homenageado: "${nome}" em destaque no topo do lado direito, utilizando tipografia estilo caligrafia dourada elegante.
 - Datas Comemorativas: "${dataNasc} - ${dataFalesc}" em fonte limpa e legível, posicionadas no lado direito logo abaixo do nome.
 - Frase Memorial: "${frase}" disposta na parte inferior do lado direito em fonte serifada delicada.`;
-    } else {
-        layoutPrompt = `- Layout e Distribuição: Composição centralizada equilibrada.
+        } else {
+            layoutPrompt = `- Layout e Distribuição: Composição centralizada equilibrada.
 - Elemento Central (Foto): Deixe um espaço de retrato central amplo e destacado como elemento principal da peça para inserção da foto.
+${instrucaoQualidadeFoto}
 - Nome do Homenageado: "${nome}" em destaque superior/centralizado, utilizando tipografia estilo caligrafia dourada elegante.
 - Datas Comemorativas: "${dataNasc} - ${dataFalesc}" em fonte limpa e perfeitamente legível posicionado logo abaixo da imagem.
 - Frase Memorial: "${frase}" disposta na parte inferior em fonte serifada delicada.`;
-    }
+        }
 
-    const promptText = `ARTE GRÁFICA PLANA PRONTA PARA IMPRESSÃO EM PORCELANA (DESIGN 2D, SEM MOCKUP 3D DE TÚMULO OU PERSPECTIVA)
+        promptText = `ARTE GRÁFICA PLANA PRONTA PARA IMPRESSÃO EM PORCELANA (DESIGN 2D, SEM MOCKUP 3D DE TÚMULO OU PERSPECTIVA)
 
 - Formato e Dimensão: Placa de porcelana em formato ${formato}, tamanho ${tamanho}.
 ${layoutPrompt}
 - Fundo Gráfico: Paisagem suave de ${fundo}, integrada sutilmente ao fundo da peça.
 - Borda: Moldura perfeitamente contínua com acabamento em ${borda}.
 - Detalhes Especiais da Edição: ${detalhe}.
-- Especificação Técnica: Design direto em 2D, alta resolução (300 DPI), iluminação frontal limpa, pronto para envio ao forno/impressora cerâmica.`;
+- Especificação Técnica: Design direto em 2D, ultra nitidez, alta resolução (300 DPI), iluminação frontal limpa, pronto para envio ao forno/impressora cerâmica.`;
+    }
 
     const output = document.getElementById('promptOutput');
     output.innerText = promptText;
