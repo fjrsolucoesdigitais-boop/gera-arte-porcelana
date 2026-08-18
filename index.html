@@ -99,12 +99,12 @@
 
         <div>
             <label>Estilo do Fundo:</label>
-            <input type="text" id="fundo" value="FUNDO CÉU COM NUVENS">
+            <input type="text" id="fundo" value="Campos suaves e flores delicadas em tons serenos">
         </div>
 
         <div>
             <label>Estilo da Borda:</label>
-            <input type="text" id="borda" value="DOURADO LISO METALICO">
+            <input type="text" id="borda" value="Dourado estilo cordão trançado">
         </div>
 
         <div class="full-width">
@@ -142,13 +142,17 @@ function gerarPromptTexto() {
     
     const tamanho = document.getElementById('tamanho').value;
     const formato = document.getElementById('formato').value;
-    const fundo = document.getElementById('fundo').value;
-    const borda = document.getElementById('borda').value;
-    const detalhe = document.getElementById('detalhe').value;
+    const fundoInput = document.getElementById('fundo').value.trim();
+    const borda = document.getElementById('borda').value.trim();
+    const detalhe = document.getElementById('detalhe').value.trim();
 
-    // Instrução técnica para otimização da imagem
+    // Tratamento do Fundo (Se estiver em branco, fica fundo limpo/branco)
+    const fundoPrompt = fundoInput ? `Paisagem suave de ${fundoInput}, integrada sutilmente ao fundo da peça.` : `Fundo completamente neutro, limpo e em tom branco puro, sem paisagens ou decorações de fundo.`;
+
+    // Instrução técnica de restauração
     const instrucaoQualidadeFoto = "- Restauração e Qualidade da Foto: Melhore automaticamente a nitidez, definição dos traços faciais e foco do retrato enviado. Elimine ruídos, manchas, sombras indesejadas, desfoque ou imperfeições da imagem original, mantendo total fidelidade aos feições reais da pessoa.";
 
+    // Verifica se TODOS os campos textuais do homenageado foram deixados em branco
     const apenasFoto = (!nome && !dataNasc && !dataFalesc && !frase);
 
     let promptText = "";
@@ -160,7 +164,7 @@ function gerarPromptTexto() {
 - Elemento Central: Trate e posicione o retrato da pessoa enviado em destaque central total, ocupando a área principal da composição de forma limpa e harmônica.
 ${instrucaoQualidadeFoto}
 - Textos e Tipografia: NÃO INCLUA NENHUM TEXTO, NOME, DATA OU FRASE. A peça deve conter EXCLUSIVAMENTE a foto do homenageado.
-- Fundo Gráfico: Paisagem suave de ${fundo}, integrada sutilmente ao fundo da peça.
+- Fundo Gráfico: ${fundoPrompt}
 - Borda: Moldura perfeitamente contínua com acabamento em ${borda}.
 - Detalhes Especiais da Edição: ${detalhe}.
 - Especificação Técnica: Design direto em 2D, ultra nitidez, alta resolução (300 DPI), iluminação frontal limpa, pronto para envio ao forno/impressora cerâmica.`;
@@ -174,29 +178,37 @@ ${instrucaoQualidadeFoto}
 
         const ehLayoutLateral = (formato === "retangular") && tamanhosLaterais.includes(tamanho);
 
+        // Construção dinâmica das linhas de texto (só inclui o que estiver preenchido)
+        let linhaNome = nome ? `- Nome do Homenageado: "${nome}" em destaque, utilizando tipografia estilo caligrafia dourada elegante.` : "";
+        let linhaDatas = (dataNasc || dataFalesc) ? `- Datas Comemorativas: "${dataNasc} - ${dataFalesc}" em fonte limpa e legível, posicionadas com clareza.` : "";
+        let linhaFrase = frase ? `- Frase Memorial: "${frase}" disposta na parte inferior em fonte serifada delicada.` : "- Frase Memorial: NENHUMA frase deve ser adicionada à peça.";
+
         let layoutPrompt = "";
 
         if (ehLayoutLateral) {
-            layoutPrompt = `- Layout e Distribuição: Composição horizontal dividida. A foto do homenageado deve ficar posicionada no LADO ESQUERDO da placa. Toda a parte textual (nome, datas e frase) deve ficar organizada no LADO DIREITO da peça.
+            layoutPrompt = `- Layout e Distribuição: Composição horizontal dividida. A foto do homenageado deve ficar posicionada no LADO ESQUERDO da placa. Toda a parte textual deve ficar organizada no LADO DIREITO da peça.
 - Elemento Central (Foto): Posicione o retrato da pessoa no lado esquerdo da composição com amplo destaque.
 ${instrucaoQualidadeFoto}
-- Nome do Homenageado: "${nome}" em destaque no topo do lado direito, utilizando tipografia estilo caligrafia dourada elegante.
-- Datas Comemorativas: "${dataNasc} - ${dataFalesc}" em fonte limpa e legível, posicionadas no lado direito logo abaixo do nome.
-- Frase Memorial: "${frase}" disposta na parte inferior do lado direito em fonte serifada delicada.`;
+${linhaNome ? linhaNome.replace('em destaque,', 'em destaque no topo do lado direito,') : ''}
+${linhaDatas ? linhaDatas.replace('posicionadas com clareza.', 'posicionadas no lado direito logo abaixo do nome.') : ''}
+${linhaFrase ? linhaFrase.replace('na parte inferior', 'na parte inferior do lado direito') : ''}`;
         } else {
             layoutPrompt = `- Layout e Distribuição: Composição centralizada equilibrada.
 - Elemento Central (Foto): Deixe um espaço de retrato central amplo e destacado como elemento principal da peça para inserção da foto.
 ${instrucaoQualidadeFoto}
-- Nome do Homenageado: "${nome}" em destaque superior/centralizado, utilizando tipografia estilo caligrafia dourada elegante.
-- Datas Comemorativas: "${dataNasc} - ${dataFalesc}" em fonte limpa e perfeitamente legível posicionado logo abaixo da imagem.
-- Frase Memorial: "${frase}" disposta na parte inferior em fonte serifada delicada.`;
+${linhaNome ? linhaNome.replace('em destaque,', 'em destaque superior/centralizado,') : ''}
+${linhaDatas ? linhaDatas.replace('posicionadas com clareza.', 'posicionado logo abaixo da imagem.') : ''}
+${linhaFrase}`;
         }
+
+        // Limpa linhas vazias do layout para manter o prompt limpo
+        layoutPrompt = layoutPrompt.split('\n').filter(line => line.trim() !== "").join('\n');
 
         promptText = `ARTE GRÁFICA PLANA PRONTA PARA IMPRESSÃO EM PORCELANA (DESIGN 2D, SEM MOCKUP 3D DE TÚMULO OU PERSPECTIVA)
 
 - Formato e Dimensão: Placa de porcelana em formato ${formato}, tamanho ${tamanho}.
 ${layoutPrompt}
-- Fundo Gráfico: Paisagem suave de ${fundo}, integrada sutilmente ao fundo da peça.
+- Fundo Gráfico: ${fundoPrompt}
 - Borda: Moldura perfeitamente contínua com acabamento em ${borda}.
 - Detalhes Especiais da Edição: ${detalhe}.
 - Especificação Técnica: Design direto em 2D, ultra nitidez, alta resolução (300 DPI), iluminação frontal limpa, pronto para envio ao forno/impressora cerâmica.`;
